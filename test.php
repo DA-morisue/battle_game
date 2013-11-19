@@ -83,7 +83,7 @@ for ( $i = 0 ; $i < count($record); $i++){
 	$average = $average + $record[$i];
 }
 
-echo "<br>実行時間[平均]：".($average/10)."秒<br>なのよさ";
+echo "<br>実行時間[平均]：".($average/10)."秒<br>";
 
 
 ?>
