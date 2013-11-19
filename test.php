@@ -24,11 +24,13 @@
 
 
 
-
-
-
 // 暗号化テスト<br>
 <?php
+
+$record = array();
+
+for ( $i = 0; $i < 10; $i++ ){
+
 
 //-----処理時間計測開始-----------------------
 
@@ -37,12 +39,10 @@ $time_start = microtime(true);
 //---------------------------------------------
 
 	$pass = "password";
-	echo $pass."<br>";
+//	echo $pass."<br>";
 
 	$password = hash("sha256",$pass);
-	echo $password."<br>";
-
-
+//	echo $password."<br>";
 
 
 // 参考url:http://wawatete.ddo.jp/exec/program/php/php_password
@@ -56,12 +56,12 @@ $time_start = microtime(true);
 	$encryptedpassword = $salt.$password;
 	//「Iteration Count」回数分の暗号化実行
 	$iterationCount = 1000;
-	for($i=0;$i<$iterationCount;$i++)
+	for( $count=0 ; $count < $iterationCount ; $count++ )
 	{
 		$encryptedpassword = sha1($encryptedpassword);
 	}
 	//暗号化されたパスワードに「Salt」を付加した状態で、ファイル等に保存
-	print $salt.$encryptedpassword."<br>"."<br>";
+//	print $salt.$encryptedpassword."<br>"."<br>";
 
 
 
@@ -70,9 +70,21 @@ $time_start = microtime(true);
 	$time_end = microtime(true);
 	$time = $time_end - $time_start;
 
-	echo "実行時間:{$time}秒";
+//	echo "実行時間:{$time}秒<br><br>";
 
 //---------------------------------------------
+
+	array_push($record, $time);
+}
+
+$average = 0;
+for ( $i = 0 ; $i < count($record); $i++){
+	echo "実行時間[".$i."]：".$record[$i]."秒<br>";
+	$average = $average + $record[$i];
+}
+
+echo "<br>実行時間[平均]：".($average/10)."秒<br>なのよさ";
+
 
 ?>
 
