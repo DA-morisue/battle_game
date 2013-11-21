@@ -47,11 +47,11 @@ include './include/header.php';
 
 echo('<hr>');
 
-if ($error_message) {
+if (isset($error_message)) {
 print '<font color="red">'.$error_message.'</font>';
 }
 
-if ($entry) {
+if (isset($entry)) {
 	echo($_POST["new_user_name"].'さんの新規登録に成功しました。<br><a href="./login.php">こちら</a>からログインしてください。');
 }else{echo ('
 	■ユーザー名とパスワードを入力してください。
