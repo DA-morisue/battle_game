@@ -1,0 +1,44 @@
+body{
+	padding-top: 50px;
+	padding-bottom: 50px;
+	background: #CCCCCC;
+}
+ 
+header{
+	position: fixed !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 50px;
+	margin: 0 auto;
+	background: #222222;
+}
+ 
+header section#header{
+	width: 1000px;
+	margin: 0 auto;
+}
+ 
+header section#header h1{
+	color: #FFFFFF;
+}
+ 
+#contents{
+	width: 1000px;
+	margin: 0 auto;
+	border: 1px solid #333333;
+	background: #FFFFFF;
+}
+ 
+footer{
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 80px;
+	margin: 0 auto;
+	margin-top: 10px;
+	background: #222222;
+	color: #FFFFFF;
+	text-align: center;
+}

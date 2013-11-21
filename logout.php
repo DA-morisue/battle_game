@@ -1,34 +1,13 @@
 <?php
-include 'header.php';
-include 'db_access.php';
+include './include/session.php';
+include './include/db_access.php';
+
+include './include/header.php';
+
+echo('<hr>');
 
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="robots" content="noindex,nofollow,noarchive">
-<title>バトル</title>
-	<link href="./morisueke.css" type="text/css" rel="stylesheet">
-</head>
-<body>
-
-
-
-<!-- ヘッダー -->
-
-<table>
-<tr><td>
-</td>
-<td align="right">
-<script type="text/javascript"><!--
-	  document.write (document.lastModified + "更新")
-	  //--></SCRIPT>
-</td>
-</table>
-
-<hr>
 
 ■ログアウトページ<br>
 <?php
@@ -56,19 +35,6 @@ include 'db_access.php';
 
 
 
-<!-- フッター -->
-<p style='clear:both'>
-<hr>
-
-<table>
-<tr><td>
-</td>
-<td align="right">
-<script type="text/javascript"><!--
-	  document.write (document.lastModified + "更新")
-	  //--></SCRIPT>
-</td>
-</table>
-
-</body>
-</html>
+<?php
+include './include/footer.php';
+?>

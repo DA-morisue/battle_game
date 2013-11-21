@@ -1,6 +1,6 @@
 <?php
-include 'header.php';
-include 'db_access.php';
+include './include/session.php';
+include './include/db_access.php';
 
 
 // 新規登録ボタンが押されたかを判定
@@ -42,43 +42,11 @@ if (isset($_POST["entry"])) {
 		db_close($link);
 	}
 }
-?>
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="robots" content="noindex,nofollow,noarchive">
-<title>バトル</title>
-	<link href="./morisueke.css" type="text/css" rel="stylesheet">
-</head>
-<body>
+include './include/header.php';
 
-<hr>
+echo('<hr>');
 
-<?php
-//     print('セッション変数の確認をします。<br>');
-//     if (!isset($_SESSION["user_name"])){
-//         print('セッション変数user_nameは登録されていません。<br>');
-//     }else{
-//         print($_SESSION["user_name"].'<br>');
-//     }
-
-//     print('セッションIDの確認をします。<br>');
-//     if (!isset($_COOKIE["PHPSESSID"])){
-//         print('セッションは登録されていません。<br>');
-//     }else{
-//         print($_COOKIE["PHPSESSID"].'<br>');
-//     }
-?>
-
-<hr>
-
-
-
-
-
-<?php
 if ($error_message) {
 print '<font color="red">'.$error_message.'</font>';
 }
@@ -101,8 +69,8 @@ if ($entry) {
 	<a href="./result.php">リザルトページ</a><br>');
 }
 
+
+include './include/footer.php';
+
 ?>
 
-
-</body>
-</html>

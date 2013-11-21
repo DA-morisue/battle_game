@@ -1,38 +1,26 @@
 <?php
-include 'header.php';
-include 'db_access.php';
+include './include/session.php';
+include './include/db_access.php';
 
-?>
+include './include/header.php';
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="robots" content="noindex,nofollow,noarchive">
-<title>バトル</title>
-	<link href="./morisueke.css" type="text/css" rel="stylesheet">
-</head>
-<body>
+echo('<hr>');
 
 
+echo('■ログイン後のページ。<br>');
+print('セッション変数の確認をします。<br>');
+if (!isset($_SESSION["user_name"])){
+    print('セッション変数user_nameは登録されていません。<br>');
+}else{
+    print($_SESSION["user_name"].'<br>');
+}
 
-<hr>
-■ログイン後のページ。<br>
-
-<?php
-    print('セッション変数の確認をします。<br>');
-    if (!isset($_SESSION["user_name"])){
-        print('セッション変数user_nameは登録されていません。<br>');
-    }else{
-        print($_SESSION["user_name"].'<br>');
-    }
-
-    print('セッションIDの確認をします。<br>');
-    if (!isset($_COOKIE["PHPSESSID"])){
-        print('セッションは登録されていません。<br>');
-    }else{
-        print($_COOKIE["PHPSESSID"].'<br>');
-    }
+print('セッションIDの確認をします。<br>');
+if (!isset($_COOKIE["PHPSESSID"])){
+    print('セッションは登録されていません。<br>');
+}else{
+    print($_COOKIE["PHPSESSID"].'<br>');
+}
 ?>
 
 <form action="logout.php" method="POST">
@@ -46,6 +34,6 @@ include 'db_access.php';
 <a href="./result.php">リザルトページ</a><br>
 
 
-
-</body>
-</html>
+<?php
+include './include/footer.php';
+?>

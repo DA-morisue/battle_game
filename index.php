@@ -76,7 +76,7 @@ if (isset($_POST["login"])) {
 		$_SESSION["user_name"] = $_POST["user_name"];
 		
 		// 管理者専用画面へリダイレクト
-		$login_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/eclips/battle_game/result.php");
+		$login_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/battle_game/result.php");
 
 		//$login_url = "http://{$_SERVER["HTTP_HOST"]}/php_10days/anq_result.php";
 		header("Location: {$login_url}");
