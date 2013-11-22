@@ -8,29 +8,39 @@ if (isset($_POST["login"])) {
 
 
 	// 空白チェック
-
-
-	//DBからユーザー情報を取得
-	$link = db_access();$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$_POST["user_name"].'";');
-
-	if (!$result) {
-		die('クエリーが失敗しました。'.mysql_error());
+	if (empty($_POST["password"])) {
+		$error_message = '<p class="error">パスワードが入っていません</p>';
 	}
 
-	$user = mysql_fetch_assoc($result);
-
-
-	// ユーザー名とパスワードが一致した場合はログイン処理を行う
-	if ($_POST["user_name"] == $user["user_name"] && $_POST["password"] == $user["password"]) {
-
-		// ログインが成功した証をセッションに保存
-		$_SESSION["user_name"] = $_POST["user_name"];
-
-		// リザルトページにリダイレクトする
-		$login_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/battle_game/result.php");
-		header("Location: {$login_url}");
+	if (empty($_POST["user_name"])) {
+		$error_message = '<p class="error">IDが入っていません</p>';
 	}
-	$error_message = "ユーザ名もしくはパスワードが違っています。";
+
+
+	if (!isset($error_message)) {
+		//DBからユーザー情報を取得
+		$link = db_access();$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$_POST["user_name"].'";');
+
+		if (!$result) {
+			die('クエリーが失敗しました。'.mysql_error());
+		}
+
+		$user = mysql_fetch_assoc($result);
+
+
+		// ユーザー名とパスワードが一致した場合はログイン処理を行う
+		if ($_POST["user_name"] == $user["user_name"] && $_POST["password"] == $user["password"]) {
+
+			// ログインが成功した証をセッションに保存
+			$_SESSION["user_name"] = $_POST["user_name"];
+
+			// リザルトページにリダイレクトする
+			$login_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/battle_game/result.php");
+			header("Location: {$login_url}");
+		}else{
+			$error_message = "ユーザ名もしくはパスワードが間違っています。";
+		}
+	}
 }
 
 

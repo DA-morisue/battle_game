@@ -23,7 +23,7 @@ if (!isset($_SESSION["user_name"])) {
 	if (isset($_POST["logout"])) {
 		//セッション変数は上書きして初期化
 		$_SESSION = array();
-			
+
 		//cookieのセッションIDを破棄
 		if (isset($_COOKIE["PHPSESSID"])) {
 			setcookie("PHPSESSID", '', time() - 1800, '/');
@@ -46,7 +46,7 @@ if (!isset($_SESSION["user_name"])) {
 			$redirect_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/battle_game/result.php");
 			header("Location: {$redirect_url}");
 			exit;
-		
+
 		// ログイン状態でゲーム内のページはそのままアクセスする。
 		default:
 			$user_name = $_SESSION["user_name"];

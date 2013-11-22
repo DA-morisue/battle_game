@@ -1,10 +1,12 @@
 <?php
-
-
 //DB接続処理
 function db_access() {
+
+	// DBアクセス用の情報を取得
+	include '../../pass/battle_game.php';
+
 	//mysql接続
-	$link = mysql_connect('localhost', 'morisue', '7815659');
+	$link = mysql_connect( $db_searver , $db_id , $db_pass );
 	if (!$link) {
 		die('接続失敗です。'.mysql_error());
 	}
