@@ -58,7 +58,7 @@ $time_start = microtime(true);
 	$iterationCount = 1000;
 	for( $count=0 ; $count < $iterationCount ; $count++ )
 	{
-		$encryptedpassword = sha1($encryptedpassword);
+		$encryptedpassword = sha256($encryptedpassword);
 	}
 	//暗号化されたパスワードに「Salt」を付加した状態で、ファイル等に保存
 //	print $salt.$encryptedpassword."<br>"."<br>";

@@ -57,8 +57,8 @@ if (isset($_POST["login"])) {
 	$link = db_access();
 	
 	//テーブルの内容を取得して表示
-//	$_POST["user_name"] = mb_convert_encoding($_POST["user_name"], "utf-8", "auto");
-	$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$_POST["user_name"].'";');
+//	$_POST["user_id"] = mb_convert_encoding($_POST["user_id"], "utf-8", "auto");
+	$result = mysql_query('SELECT * FROM user WHERE user_id = "'.$_POST["user_id"].'";');
 
 	if (!$result) {
 		die('クエリーが失敗しました。'.mysql_error());
@@ -67,13 +67,13 @@ if (isset($_POST["login"])) {
 	$user = mysql_fetch_assoc($result);
 
 
-	// user_nameが「php」でpasswordが「password」だとログイン出来るようになっている
-	if ($_POST["user_name"] == $user["user_name"] && $_POST["password"] == $user["password"]) {
+	// user_idが「php」でpasswordが「password」だとログイン出来るようになっている
+	if ($_POST["user_id"] == $user["user_id"] && $_POST["password"] == $user["password"]) {
 
 		
 		
 		// ログインが成功した証をセッションに保存
-		$_SESSION["user_name"] = $_POST["user_name"];
+		$_SESSION["user_id"] = $_POST["user_id"];
 		
 		// 管理者専用画面へリダイレクト
 		$login_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/battle_game/result.php");
@@ -114,10 +114,10 @@ if (isset($_POST["login"])) {
 
 <?php
     print('セッション変数の確認をします。<br>');
-    if (!isset($_SESSION["user_name"])){
-        print('セッション変数user_nameは登録されていません。<br>');
+    if (!isset($_SESSION["user_id"])){
+        print('セッション変数user_idは登録されていません。<br>');
     }else{
-        print($_SESSION["user_name"].'<br>');
+        print($_SESSION["user_id"].'<br>');
     }
 
     print('セッションIDの確認をします。<br>');
@@ -140,7 +140,7 @@ print '<font color="red">'.$error_message.'</font>';
 }
 ?>
 <form action="index.php" method="POST">
-ユーザ名：<input type="text" name="user_name" value="" /><br />
+ユーザ名：<input type="text" name="user_id" value="" /><br />
 パスワード：<input type="password" name="password" value="" /><br />
 <input type="submit" name="login" value="ログイン" />
 </form>
