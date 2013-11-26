@@ -5,7 +5,7 @@ session_start();
 if (isset($_POST["logout"])) {
 	//セッション変数は上書きして初期化
 	$_SESSION = array();
-	
+
 	//cookieのセッションIDを破棄
 	if (isset($_COOKIE["PHPSESSID"])) {
 		setcookie("PHPSESSID", '', time() - 1800, '/');
@@ -28,7 +28,7 @@ function db_access() {
 		die('データベース選択失敗です。'.mysql_error());
 	}
 	return $link;
-	
+
 	//文字コードをutf8に設定
 	mysql_set_charset('utf8');
 }
@@ -38,12 +38,12 @@ function db_access() {
 function db_close($link) {
 	//mysql切断
 	$close_flag = mysql_close($link);
-	
+
 	if ($close_flag){
 		print('<p>切断に成功しました。</p>');
 	}
-	
-	
+
+
 	// エラーメッセージを格納する変数を初期化
 	$error_message = "";
 }
@@ -55,7 +55,7 @@ if (isset($_POST["login"])) {
 
 	//DBからユーザー情報を取得して認証
 	$link = db_access();
-	
+
 	//テーブルの内容を取得して表示
 //	$_POST["user_id"] = mb_convert_encoding($_POST["user_id"], "utf-8", "auto");
 	$result = mysql_query('SELECT * FROM user WHERE user_id = "'.$_POST["user_id"].'";');
@@ -70,11 +70,11 @@ if (isset($_POST["login"])) {
 	// user_idが「php」でpasswordが「password」だとログイン出来るようになっている
 	if ($_POST["user_id"] == $user["user_id"] && $_POST["password"] == $user["password"]) {
 
-		
-		
+
+
 		// ログインが成功した証をセッションに保存
 		$_SESSION["user_id"] = $_POST["user_id"];
-		
+
 		// 管理者専用画面へリダイレクト
 		$login_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/battle_game/result.php");
 
@@ -98,17 +98,6 @@ if (isset($_POST["login"])) {
 
 
 
-<!-- ヘッダー -->
-
-<table width="100%">
-<tr><td>
-</td>
-<td align="right">
-<script type="text/javascript"><!--
-	  document.write (document.lastModified + "更新")
-	  //--></SCRIPT>
-</td>
-</table>
 
 <hr>
 
@@ -148,7 +137,7 @@ print '<font color="red">'.$error_message.'</font>';
 <hr>
 <br>
 
-<?php  
+<?php
 // // セッションテスト
 //     session_start();
 //     if (!isset($_COOKIE["PHPSESSID"])){
@@ -388,16 +377,7 @@ function put_tree($no, $line, $broths, $childs, $texts) {
 }
 
 ?>
-<html>
-<head>
-<title>ツリー表示</title>
-<style>
-.line {
-  font-family: "ＭＳ ゴシック", monospace;
-}
-</style>
-</head>
-<body>
+
 <?php
 
 $logs = array(
@@ -438,24 +418,6 @@ foreach ($roots as $root) {
 ?>
 
 
-	
-</body>
-</html>
-
-
-<!-- フッター -->
-<p style='clear:both'>
-<hr>
-
-<table width="100%">
-<tr><td>
-</td>
-<td align="right">
-<script type="text/javascript"><!--
-	  document.write (document.lastModified + "更新")
-	  //--></SCRIPT>
-</td>
-</table>
 
 </body>
 </html>

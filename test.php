@@ -8,17 +8,6 @@
 </head>
 <body>
 
-<!-- ヘッダー -->
-
-<table width="100%">
-<tr><td>
-</td>
-<td align="right">
-<script type="text/javascript"><!--
-	  document.write (document.lastModified + "更新")
-	  //--></SCRIPT>
-</td>
-</table>
 
 <hr>
 
@@ -88,24 +77,6 @@ echo "<br>実行時間[平均]：".($average/10)."秒<br>";
 
 ?>
 
-
-</body>
-</html>
-
-
-<!-- フッター -->
-<p style='clear:both'>
-<hr>
-
-<table width="100%">
-<tr><td>
-</td>
-<td align="right">
-<script type="text/javascript"><!--
-	  document.write (document.lastModified + "更新")
-	  //--></SCRIPT>
-</td>
-</table>
 
 </body>
 </html>
