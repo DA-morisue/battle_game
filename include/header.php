@@ -10,18 +10,39 @@ echo('
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<title>battle_game</title>
+
+<!-- css -->
 	<link href="./battle_game.css" type="text/css" rel="stylesheet">
 
-
+<!-- javascript -->
 	<script type="text/javascript" src="./js/iscroll.js"></script>
 	<script type="text/javascript">
+
+<!--
 	var myScroll;
 	function loaded() {
 		myScroll = new iScroll("wrapper");
 	}
 	document.addEventListener("touchmove", function (e) { e.preventDefault(); }, false);
 	document.addEventListener("DOMContentLoaded", function () { setTimeout(loaded, 200); }, false);
+-->
+
+	var myScroll;
+	function loaded() {
+	    myScroll = new iScroll("wrapper", {
+	        useTransform: false,
+	        onBeforeScrollStart: function (e) {
+	            var target = e.target;
+	            while (target.nodeType != 1) target = target.parentNode;
+	            if (target.tagName != "SELECT" && target.tagName != "INPUT" && target.tagName != "TEXTAREA")
+	                e.preventDefault();
+	        }
+	    });
+	}
+	document.addEventListener("touchmove", function (e) { e.preventDefault(); }, false);
+	document.addEventListener("DOMContentLoaded", loaded, false);
 	</script>
+
 </head>
 <body>
 

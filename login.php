@@ -14,11 +14,11 @@ if (isset($_POST["login"])) {
 	//入力確認
 	//--------------------------------------
 	if (empty($_POST["password"])) {
-		$error_message = '<p class="error">パスワードが入っていません</p>';
+		$error_message = 'パスワードを入力してください。';
 	}
 
 	if (empty($_POST["user_id"])) {
-		$error_message = '<p class="error">IDが入っていません</p>';
+		$error_message = 'IDを入力してください。';
 	}
 
 	if (!isset($error_message)) {
@@ -76,7 +76,7 @@ echo('<hr>');
 
 // パスワード入力にエラーがある場合はエラーメッセージ表示
 if (isset($error_message)) {
-	print '<font color="red">'.$error_message.'</font>';
+	print '<p id="error">'.$error_message.'</p>';
 }
 ?>
 
