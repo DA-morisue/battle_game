@@ -30,7 +30,7 @@ echo('<hr>');
 
 <a href="./login.php">ログインページ</a><br>
 <a href="./logout.php">ログアウトページ</a><br>
-<a href="./result.php">リザルトページ</a><br>
+<a href="./mypage.php">リザルトページ</a><br>
 
 
 

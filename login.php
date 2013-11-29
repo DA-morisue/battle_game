@@ -40,7 +40,7 @@ if (isset($_POST["login"])) {
 			$_SESSION["user_id"] = $id;
 
 			// リザルトページにリダイレクトする
-			$login_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/battle_game/result.php");
+			$login_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/battle_game/mypage.php");
 			header("Location: {$login_url}");
 		}else{
 			$error_message = "IDもしくはパスワードが間違っています。";
@@ -93,7 +93,7 @@ if (isset($error_message)) {
 
 <a href="./login.php">ログインページ</a><br>
 <a href="./logout.php">ログアウトページ</a><br>
-<a href="./result.php">リザルトページ</a><br>
+<a href="./mypage.php">リザルトページ</a><br>
 
 
 

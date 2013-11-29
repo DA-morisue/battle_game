@@ -21,8 +21,8 @@ if (isset($_POST["entry"])) {
 	} elseif (!(preg_match("/^([a-zA-Z0-9])+$/", $id) && preg_match("/^([a-zA-Z0-9])+$/", $pass))) {
 		$error_message = "ID及びパスワードは半角英数のみ使用できます。";
 
-	//入力されたパスワードが8文字以上～256文字以内であるか確認する
-	} elseif (mb_strlen($pass) < 8 && mb_strlen($pass) > 256) {
+	//入力されたパスワードが8文字以上～32文字以内であるか確認する
+	} elseif (mb_strlen($pass) < 8 && mb_strlen($pass) > 32) {
 		$error_message = "パスワードは8文字以上～256文字以内で設定してください。";
 
 	//入力された情報に問題なければ登録処理を行う
@@ -89,7 +89,7 @@ if (isset($entry)) {
 
 	<a href="./login.php">ログインページ</a><br>
 	<a href="./logout.php">ログアウトページ</a><br>
-	<a href="./result.php">リザルトページ</a><br>');
+	<a href="./mypage.php">リザルトページ</a><br>');
 }else{
 	//初アクセスor登録失敗時はこちらを表示
 	echo ('
@@ -108,7 +108,7 @@ if (isset($entry)) {
 
 	<a href="./login.php">ログインページ</a><br>
 	<a href="./logout.php">ログアウトページ</a><br>
-	<a href="./result.php">リザルトページ</a><br>');
+	<a href="./mypage.php">リザルトページ</a><br>');
 }
 
 
