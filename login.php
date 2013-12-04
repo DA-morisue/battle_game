@@ -7,7 +7,7 @@ include './include/db_access.php';
 if (isset($_POST["login"])) {
 
 
-	$id = htmlspecialchars($_POST['user_id'],ENT_QUOTES);
+	$user_name = htmlspecialchars($_POST['user_name'],ENT_QUOTES);
 	$pass = htmlspecialchars($_POST['password'],ENT_QUOTES);
 
 	//--------------------------------------
@@ -17,13 +17,14 @@ if (isset($_POST["login"])) {
 		$error_message = 'パスワードを入力してください。';
 	}
 
-	if (empty($_POST["user_id"])) {
+	if (empty($_POST["user_name"])) {
 		$error_message = 'IDを入力してください。';
 	}
 
 	if (!isset($error_message)) {
 		//DBからユーザー情報を取得
-		$link = db_access();$result = mysql_query('SELECT * FROM user WHERE user_id = "'.$_POST["user_id"].'";');
+		$link = db_access();
+		$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$_POST["user_name"].'";');
 
 		if (!$result) {
 			die('クエリーが失敗しました。'.mysql_error());
@@ -34,12 +35,28 @@ if (isset($_POST["login"])) {
 
 		// ユーザー名とパスワードが一致した場合はログイン処理を行う
 		include './include/encrypt.php';
-		if ($id == $user["user_id"] && pass_check( $pass , $user["password"] )) {
+		if ($user_name == $user["user_name"] && pass_check( $pass , $user["password"] )) {
 
 			// ログインが成功した証をセッションに保存
-			$_SESSION["user_id"] = $id;
+			$_SESSION["user_name"] = $user_name;
 
-			// リザルトページにリダイレクトする
+
+			//DBからユーザー情報を取得
+			$link = db_access();
+			$result = mysql_query('SELECT id FROM user WHERE user_name = "'.$user_name.'";');
+
+			if (!$result) {
+				die('クエリーが失敗しました。'.mysql_error());
+			}
+
+			$user = mysql_fetch_assoc($result);
+			// ユーザーidをセッションに保存
+			$_SESSION["user_id"] = $user["id"];
+
+			//DB切断処理
+			db_close($link);
+
+			// マイページにリダイレクトする
 			$login_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/battle_game/mypage.php");
 			header("Location: {$login_url}");
 		}else{
@@ -58,10 +75,10 @@ echo('<hr>');
 
 // セッション結果の表示テスト
     print('セッション変数の確認をします。<br>');
-    if (!isset($_SESSION["user_id"])){
-        print('セッション変数user_idは登録されていません。<br>');
+    if (!isset($_SESSION["user_name"])){
+        print('セッション変数user_nameは登録されていません。<br>');
     }else{
-        print($_SESSION["user_id"].'<br>');
+        print($_SESSION["user_name"].'<br>');
     }
 
     print('セッションIDの確認をします。<br>');
@@ -82,7 +99,7 @@ if (isset($error_message)) {
 
 
 <form action="login.php" method="POST">
-▼ID<br><input type="text" name="user_id" value="" ><br>
+▼ID<br><input type="text" name="user_name" value="" ><br>
 ▼パスワード<br><input type="password" name="password" value="" ><br>
 <input type="submit" name="login" value="ログイン" >
 </form>

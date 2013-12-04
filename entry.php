@@ -6,11 +6,11 @@ include './include/db_access.php';
 // 新規登録ボタンが押されたかを判定
 if (isset($_POST["entry"])) {
 
-	$id = $_POST["new_user_id"];
+	$user_name = $_POST["new_user_name"];
 	$pass = $_POST["new_password"];
 
 	//値が入力されているか確認する
-	if ( $id == "" || $pass == "" || $_POST["re_password"] == "") {
+	if ( $user_name == "" || $pass == "" || $_POST["re_password"] == "") {
 		$error_message = "入力されていない値があります。";
 
 	//入力されたパスワードが一致しているか確認する
@@ -18,7 +18,7 @@ if (isset($_POST["entry"])) {
 		$error_message = "入力されたパスワードが一致していません。";
 
 	//入力されたidとパスワードが半角英数で構成されているか確認する
-	} elseif (!(preg_match("/^([a-zA-Z0-9])+$/", $id) && preg_match("/^([a-zA-Z0-9])+$/", $pass))) {
+	} elseif (!(preg_match("/^([a-zA-Z0-9])+$/", $user_name) && preg_match("/^([a-zA-Z0-9])+$/", $pass))) {
 		$error_message = "ID及びパスワードは半角英数のみ使用できます。";
 
 	//入力されたパスワードが8文字以上～32文字以内であるか確認する
@@ -29,7 +29,7 @@ if (isset($_POST["entry"])) {
 	} else {
 		//DBからユーザー情報を取得
 		$link = db_access();
-		$result = mysql_query('SELECT * FROM user WHERE user_id = "'.$id.'";');
+		$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$user_name.'";');
 
 		if (!$result) {
 			die('クエリーが失敗しました。'.mysql_error());
@@ -38,7 +38,7 @@ if (isset($_POST["entry"])) {
 		$user = mysql_fetch_assoc($result);
 		// ユーザー名を確認
 		// すでに登録されているユーザー名の場合はエラーを出す
-		if ($id == $user["user_id"]) {
+		if ($user_name == $user["user_name"]) {
 			$error_message = "そのIDはすでに使われています。<br>違うIDに変更してください。<br>";
 		}else{
 		// 未登録のユーザー名の場合は新規登録する。
@@ -50,8 +50,9 @@ if (isset($_POST["entry"])) {
 			//日付の取得
 			$datetime = date("Y-m-d H:i:s");
 
-			//データの登録
-			$entry = mysql_query('INSERT INTO battle_game.user( user_id , password , time ) VALUES ( "'.$id.'","'.$pass.'","'.$datetime.'" );');
+			//userへデータの登録
+			$entry = mysql_query('INSERT INTO battle_game.user( user_name , password , time ) VALUES ( "'.$user_name.'","'.$pass.'","'.$datetime.'" );');
+
 
 			if (!$entry) {
 				die('クエリーが失敗しました。'.mysql_error());
@@ -75,10 +76,10 @@ if (isset($error_message)) {
 if (isset($entry)) {
 	//登録成功時はこちらを表示
 	echo(
-	$_POST["new_user_id"].'さんの新規登録に成功しました。<br>こちらからログインしてください。<br>
+	$_POST["new_user_name"].'さんの新規登録に成功しました。<br>こちらからログインしてください。<br>
 	<hr>
 	<form action="login.php" method="POST">
-	▼ID<br><input type="text" name="user_id" value="" ><br>
+	▼ID<br><input type="text" name="user_name" value="" ><br>
 	▼パスワード<br><input type="password" name="password" value="" ><br>
 	<input type="submit" name="login" value="ログイン" >
 	</form>
@@ -98,7 +99,7 @@ if (isset($entry)) {
 	パスワードは8文字以上で設定してください。<br>
 	<br>
 	<form action="entry.php" method="POST">
-	▼ID<br><input type="text" name="new_user_id" value="初期値"><br>
+	▼ID<br><input type="text" name="new_user_name" value="初期値"><br>
 	▼パスワード<br><input type="password" name="new_password" value=""><br>
 	▼再パスワード<br><input type="password" name="re_password" value=""><br>
 	<input type="submit" name="entry" value="新規登録する" />

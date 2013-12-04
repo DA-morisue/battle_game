@@ -2,8 +2,13 @@
 session_start();
 session_regenerate_id(true); // sessionハイジャック防止
 
+// ユーザーidの確認
+if (isset($_SESSION["user_id"])) {
+	$user_id = $_SESSION["user_id"];
+}
+
 // ログイン状態を確認してのリダイレクト処理
-if (!isset($_SESSION["user_id"])) {
+if (!isset($_SESSION["user_name"])) {
 	// ログインしていない場合
 	switch ($_SERVER["SCRIPT_NAME"]) {
 		// ログインページ、ログアウトページ、エントリーページなら何もしない
@@ -49,8 +54,7 @@ if (!isset($_SESSION["user_id"])) {
 
 		// ログイン状態でゲーム内のページはそのままアクセスする。
 		default:
-			$user_id = $_SESSION["user_id"];
-			print $user_id."さん　ログイン成功";
+			$user_name = $_SESSION["user_name"];
 			break;
 	}
 }

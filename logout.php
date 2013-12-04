@@ -12,10 +12,10 @@ echo('<hr>');
 ■ログアウトページ<br>
 <?php
     print('セッション変数の確認をします。<br>');
-    if (!isset($_SESSION["user_id"])){
-        print('セッション変数user_idは登録されていません。<br>');
+    if (!isset($_SESSION["user_name"])){
+        print('セッション変数user_nameは登録されていません。<br>');
     }else{
-        print($_SESSION["user_id"].'<br>');
+        print($_SESSION["user_name"].'<br>');
     }
 
     print('セッションIDの確認をします。<br>');

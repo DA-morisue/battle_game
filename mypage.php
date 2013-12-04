@@ -4,23 +4,24 @@ include './include/db_access.php';
 
 include './include/header.php';
 
-echo('<hr>');
+
+class mypage {
+
+	function function_name() {
+		// DBからユーザー情報を取得
+		$link = db_access();
+		$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$id.'";');
+
+		// DB切断処理
+		db_close($link);
+	}
 
 
-echo('■ログイン後のページ。<br>');
-print('セッション変数の確認をします。<br>');
-if (!isset($_SESSION["user_id"])){
-    print('セッション変数user_idは登録されていません。<br>');
-}else{
-    print($_SESSION["user_id"].'<br>');
 }
 
-print('セッションIDの確認をします。<br>');
-if (!isset($_COOKIE["PHPSESSID"])){
-    print('セッションは登録されていません。<br>');
-}else{
-    print($_COOKIE["PHPSESSID"].'<br>');
-}
+
+echo "ID:".$user_id."<br>";
+
 ?>
 <hr>
 名前：<br>
