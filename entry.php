@@ -98,7 +98,7 @@ if (isset($entry)) {
 	パスワードは8文字以上で設定してください。<br>
 	<br>
 	<form action="entry.php" method="POST">
-	▼ID<br><input type="text" name="new_user_id" value=""><br>
+	▼ID<br><input type="text" name="new_user_id" value="初期値"><br>
 	▼パスワード<br><input type="password" name="new_password" value=""><br>
 	▼再パスワード<br><input type="password" name="re_password" value=""><br>
 	<input type="submit" name="entry" value="新規登録する" />
