@@ -21,9 +21,13 @@ if (isset($_POST["entry"])) {
 	} elseif (!(preg_match("/^([a-zA-Z0-9])+$/", $user_name) && preg_match("/^([a-zA-Z0-9])+$/", $pass))) {
 		$error_message = "ID及びパスワードは半角英数のみ使用できます。";
 
+	//入力されたIDが32文字以内であるか確認する
+	} elseif (mb_strlen($user_name) > 32) {
+		$error_message = "IDは32文字以内で設定してください。";
+
 	//入力されたパスワードが8文字以上～32文字以内であるか確認する
 	} elseif (mb_strlen($pass) < 8 && mb_strlen($pass) > 32) {
-		$error_message = "パスワードは8文字以上～256文字以内で設定してください。";
+		$error_message = "パスワードは8文字以上～32文字以内で設定してください。";
 
 	//入力された情報に問題なければ登録処理を行う
 	} else {
@@ -31,9 +35,7 @@ if (isset($_POST["entry"])) {
 		$link = db_access();
 		$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$user_name.'";');
 
-		if (!$result) {
-			die('クエリーが失敗しました。'.mysql_error());
-		}
+		db_error($result);
 
 		$user = mysql_fetch_assoc($result);
 		// ユーザー名を確認
@@ -53,10 +55,7 @@ if (isset($_POST["entry"])) {
 			//userへデータの登録
 			$entry = mysql_query('INSERT INTO battle_game.user( user_name , password , time ) VALUES ( "'.$user_name.'","'.$pass.'","'.$datetime.'" );');
 
-
-			if (!$entry) {
-				die('クエリーが失敗しました。'.mysql_error());
-			}
+			db_error($entry);
 		}
 
 		//DB切断処理

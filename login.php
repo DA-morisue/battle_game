@@ -26,9 +26,7 @@ if (isset($_POST["login"])) {
 		$link = db_access();
 		$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$_POST["user_name"].'";');
 
-		if (!$result) {
-			die('クエリーが失敗しました。'.mysql_error());
-		}
+		db_error($result);
 
 		$user = mysql_fetch_assoc($result);
 
@@ -45,9 +43,7 @@ if (isset($_POST["login"])) {
 			$link = db_access();
 			$result = mysql_query('SELECT id FROM user WHERE user_name = "'.$user_name.'";');
 
-			if (!$result) {
-				die('クエリーが失敗しました。'.mysql_error());
-			}
+			db_error($result);
 
 			$user = mysql_fetch_assoc($result);
 			// ユーザーidをセッションに保存

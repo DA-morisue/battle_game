@@ -37,4 +37,12 @@ function db_close($link) {
 	// エラーメッセージを格納する変数を初期化
 	$error_message = "";
 }
+
+//DB接続エラー
+function db_error($result) {
+	if (!$result) {
+		die('クエリーが失敗しました。'.mysql_error());
+	}
+}
+
 ?>
