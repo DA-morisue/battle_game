@@ -1,7 +1,5 @@
 <?php
-include './include/session.php';
-include './include/db_access.php';
-
+require_once './include/session.php';
 
 // 新規登録ボタンが押されたかを判定
 if (isset($_POST["entry"])) {
@@ -46,7 +44,7 @@ if (isset($_POST["entry"])) {
 		// 未登録のユーザー名の場合は新規登録する。
 
 			//パスワードの暗号化処理
-			include './include/encrypt.php';
+			require_once './include/encrypt.php';
 			$pass = encryptin($pass);
 
 			//日付の取得

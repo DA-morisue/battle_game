@@ -1,44 +1,51 @@
 <?php
-include './include/session.php';
-include './include/db_access.php';
+require_once './include/session.php';
 
 include './include/header.php';
 
 
-$user = new user();
-
 class user {
+	public $user;
 
-	private function get_user() {
+	function __construct($user_id) {
 		// DBからユーザー情報を取得
-		$link = db_access();
-		$result = mysql_query('SELECT * FROM user WHERE id = "'.$user_id.'";');
-		db_error($result);
-		$user = mysql_fetch_assoc($result);
+		$db_link = db_access();
+		
+		$sth = $db_link->prepare('SELECT * FROM user WHERE id = :user_id');
+		$sth->bindValue(':user_id' , $user_id , PDO::PARAM_INT);
+		$sth->execute();
+			
+		$this->user = $sth->fetch();
 
 		// DB切断処理
-		db_close($link);
+		db_close($db_link);
 	}
 }
 
 class chara{
-	private function get_chara($id) {
+	public $chara;
+	
+	function __construct($chara_id) {
 		// DBからユーザー情報を取得
 		$link = db_access();
-		$result = mysql_query('SELECT * FROM charactor WHERE id = "'.$id.'";');
-		db_error($result);
-		$chara = mysql_fetch_assoc($result);
+		$sth = $db_link->prepare('SELECT * FROM charactor WHERE id = :chara_id');
+		$sth->bindValue(':id' , $chara_id , PDO::PARAM_INT);
+		$sth->execute();
+		
+		$this->chara = mysql_fetch_assoc($result);
 
 		// DB切断処理
 		db_close($link);
 	}
 }
 
+$user = new user($user_id);
 echo "ID:".$user_id."<br>";
+dump_html($user);
 
 ?>
 <hr>
-名前：<br>
+名前：<?php echo $user->user["user_name"]?><br>
 HP：<br>
 スタミナ：<br>
 <hr>

@@ -1,6 +1,5 @@
 <?php
-include './include/session.php';
-include './include/db_access.php';
+require_once './include/session.php';
 
 // ログインボタンが押されたかを判定
 // 初めてのアクセスでは認証は行わずエラーメッセージは表示しないように
@@ -23,16 +22,19 @@ if (isset($_POST["login"])) {
 
 	if (!isset($error_message)) {
 		//DBからユーザー情報を取得
-		$link = db_access();
-		$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$_POST["user_name"].'";');
+		$db_link = db_access();
 
-		db_error($result);
-
-		$user = mysql_fetch_assoc($result);
-
+		$sth = $db_link->prepare('SELECT * FROM user WHERE user_name = :user_name');
+		$sth->bindValue(':user_name' , $_POST["user_name"] , PDO::PARAM_STR);
+		$sth->execute();
+		
+		//DB切断処理
+		db_close($db_link);
+		
+		$user = $sth->fetch();
 
 		// ユーザー名とパスワードが一致した場合はログイン処理を行う
-		include './include/encrypt.php';
+		require_once './include/encrypt.php';
 		if ($user_name == $user["user_name"] && pass_check( $pass , $user["password"] )) {
 
 			// ログインが成功した証をセッションに保存
@@ -40,17 +42,19 @@ if (isset($_POST["login"])) {
 
 
 			//DBからユーザー情報を取得
-			$link = db_access();
-			$result = mysql_query('SELECT id FROM user WHERE user_name = "'.$user_name.'";');
-
-			db_error($result);
-
-			$user = mysql_fetch_assoc($result);
+			$db_link = db_access();
+			
+			$sth = $db_link->prepare('SELECT id FROM user WHERE user_name = :user_name');
+			$sth->bindValue(':user_name' , $_POST["user_name"] , PDO::PARAM_STR);
+			$sth->execute();
+				
+			$user = $sth->fetch();
+			
 			// ユーザーidをセッションに保存
 			$_SESSION["user_id"] = $user["id"];
 
 			//DB切断処理
-			db_close($link);
+			db_close($db_link);
 
 			// マイページにリダイレクトする
 			$login_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/battle_game/mypage.php");
@@ -108,9 +112,10 @@ if (isset($error_message)) {
 <a href="./logout.php">ログアウトページ</a><br>
 <a href="./mypage.php">リザルトページ</a><br>
 
-
-
+<hr>
 
 <?php
+include './tool/csv2db.php';
+
 include './include/footer.php';
 ?>

@@ -1,6 +1,5 @@
 <?php
-include './include/session.php';
-include './include/db_access.php';
+require_once './include/session.php';
 
 include './include/header.php';
 
