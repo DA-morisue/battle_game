@@ -4,67 +4,44 @@ require_once './include/session.php';
 include './include/header.php';
 
 
-class user {
-	public $user;
-
-	function __construct($user_id) {
-		// DBからユーザー情報を取得
-		$db_link = db_access();
-		
-		$sth = $db_link->prepare('SELECT * FROM user WHERE id = :user_id');
-		$sth->bindValue(':user_id' , $user_id , PDO::PARAM_INT);
-		$sth->execute();
-			
-		$this->user = $sth->fetch();
-
-		// DB切断処理
-		db_close($db_link);
-	}
-}
-
-class chara{
-	public $chara;
-	
-	function __construct($chara_id) {
-		// DBからユーザー情報を取得
-		$link = db_access();
-		$sth = $db_link->prepare('SELECT * FROM charactor WHERE id = :chara_id');
-		$sth->bindValue(':id' , $chara_id , PDO::PARAM_INT);
-		$sth->execute();
-		
-		$this->chara = mysql_fetch_assoc($result);
-
-		// DB切断処理
-		db_close($link);
-	}
-}
-
+//　ユーザー情報
 $user = new user($user_id);
 echo "ID:".$user_id."<br>";
-dump_html($user);
+echo "ユーザー名:".$user->user_data['user_name']."<br>";
+
+//　キャラ情報
+$chara = new chara($user->user_data['chara_01']);
+
+// ポストされた装備品を切り替え
+$wear_type = array(head , body , arm , waist , leg );
+foreach ($wear_type as $value) {
+	if ($_POST[$value]) {
+		$chara->equip_wear($value, $_POST[$value]);
+	};
+}
 
 ?>
 <hr>
-名前：<?php echo $user->user["user_name"]?><br>
+名前：<?php echo $chara->chara_data['chara_name']?><br>
 HP：<br>
 スタミナ：<br>
 <hr>
 攻撃力：<br>
 属性：<br>
 <hr>
-防御力：<br>
-火耐性：<br>
-水耐性：<br>
-雷耐性：<br>
-氷耐性：<br>
-龍耐性：<br>
+防御力：<?php echo $chara->chara_data['def']?><br>
+火耐性：<?php echo $chara->chara_data['def_fire']?><br>
+水耐性：<?php echo $chara->chara_data['def_water']?><br>
+雷耐性：<?php echo $chara->chara_data['def_thunder']?><br>
+氷耐性：<?php echo $chara->chara_data['def_ice']?><br>
+龍耐性：<?php echo $chara->chara_data['def_dragon']?><br>
 <hr>
 武器：<br>
-頭防具：<br>
-胴防具：<br>
-腕防具：<br>
-腰防具：<br>
-脚防具：<br>
+頭防具：<?php echo $chara->head_data['name']?><br>
+胴防具：<?php echo $chara->body_data['name']?><br>
+腕防具：<?php echo $chara->arm_data['name']?><br>
+腰防具：<?php echo $chara->waist_data['name']?><br>
+脚防具：<?php echo $chara->leg_data['name']?><br>
 <hr>
 発動スキル1：<br>
 発動スキル2：<br>
@@ -72,6 +49,34 @@ HP：<br>
 発動スキル4：<br>
 発動スキル5：<br>
 
+<hr>
+
+■防具変更
+<form action="mypage.php" method="POST" id="equip_wear">
+	<p>
+	
+	<?php
+	$wear_type = array(head , body , arm , waist , leg );
+	foreach ($wear_type as $value) {
+		echo '<label for="'.$value.'">'.$value.'を選択：</label>';
+		echo '<select id="'.$value.'" name="'.$value.'" form="equip_wear">';
+
+		$db_link = db_access();
+		$sql = 'SELECT * FROM '.$value.'_data';
+		$sth = $db_link->prepare($sql);
+		$sth->execute();
+		
+		while ($row = $sth->fetch()) {
+			echo '<option value='.$row["id"].'>'.$row["id"].':'.$row['name'].'</option>';
+		}
+		db_close($db_link);
+		
+		echo '</select><br>';
+	}
+	?>
+	</p>
+	<input type="submit" name="equip_wear" value="防具変更" >
+</form>
 <hr>
 
 <form action="logout.php" method="POST">

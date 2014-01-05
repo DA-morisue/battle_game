@@ -88,6 +88,10 @@ echo('<hr>');
         print($_COOKIE["PHPSESSID"].'<br>');
     }
 
+    if ($_SESSION['db_update_wear']) {
+    	echo '防具のデータベースを更新しました。';
+    	$_SESSION['db_update_wear'] = false;
+    }
 echo('<hr>');
 
 
@@ -110,12 +114,11 @@ if (isset($error_message)) {
 
 <a href="./login.php">ログインページ</a><br>
 <a href="./logout.php">ログアウトページ</a><br>
-<a href="./mypage.php">リザルトページ</a><br>
+<a href="./mypage.php">マイページ</a><br>
+<a href="./management.php">管理ページ</a><br>
 
 <hr>
 
 <?php
-include './tool/csv2db.php';
-
 include './include/footer.php';
 ?>

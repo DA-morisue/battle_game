@@ -50,6 +50,7 @@ if (!isset($_SESSION["user_name"])) {
 		case '/battle_game/login.php':
 		case '/battle_game/logout.php':
 		case '/battle_game/entry.php':
+		case '/battle_game/management.php':
 			break;
 
 		default:
