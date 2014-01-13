@@ -2,21 +2,26 @@
 require_once './include/session.php';
 require_once './tool/csv_lord.php';
 
+//----------------------------------------
 // 防具テーブルデータ更新
-$table_list = array(
-		"head_data",
-		"body_data",
-		"arm_data",
-		"waist_data",
-		"leg_data"
-);
+//----------------------------------------
 
-foreach ($table_list as $table_name) {
-	$csv_data = new csv_lord('./csv/'.$table_name.'.csv');
-	update_table($table_name, $csv_data->csv_data);
+if ($_POST['db_update_wear']) {
+	$table_list = array(
+			"head_data",
+			"body_data",
+			"arm_data",
+			"waist_data",
+			"leg_data"
+	);
+
+	foreach ($table_list as $table_name) {
+		$csv_data = new csv_lord('./csv/'.$table_name.'.csv');
+		update_wear($table_name, $csv_data->csv_data);
+	}
 }
 
-function update_table( $table_name , $csv_data) {
+function update_wear( $table_name , $csv_data) {
 		
 	// DB接続
 	$db_link = db_access();
@@ -136,7 +141,63 @@ function update_table( $table_name , $csv_data) {
 		
 		$sth->execute();
 	}
+	echo '防具[ '.$table_name.' ]データベースを更新しました<br>';
 
+	// DB切断
+	db_close($db_link);
+}
+
+
+//----------------------------------------
+// スキルテーブルデータ更新
+//----------------------------------------
+
+if ($_POST['db_update_skill']) {
+	$csv_data = new csv_lord('./csv/skill_data.csv');
+	update_skill('skill_data', $csv_data->csv_data);
+}
+
+function update_skill( $table_name , $csv_data) {
+
+	// DB接続
+	$db_link = db_access();
+
+	// テーブルのデータを削除
+	$sql = 'TRUNCATE TABLE '.$table_name;
+	$sth = $db_link->prepare($sql);
+	$sth->execute();
+
+	for ($i = 1; $i < count($csv_data)-1; $i++) {
+
+		// 新規にデータをインポート
+		$sql = 'INSERT INTO '.$table_name.'(
+			id,
+			label,	
+			name,
+			category,	
+			skill_point,	
+			type
+		) VALUES (
+			:id,
+			:label,	
+			:name,
+			:category,	
+			:skill_point,	
+			:type
+			)';
+		$sth = $db_link->prepare($sql);
+
+		$sth->bindValue(':id'                , $csv_data[$i][0]  , PDO::PARAM_INT);
+		$sth->bindValue(':label'	         , $csv_data[$i][1]  , PDO::PARAM_STR);
+		$sth->bindValue(':name'              , $csv_data[$i][2]  , PDO::PARAM_INT);
+		$sth->bindValue(':category'	         , $csv_data[$i][3]  , PDO::PARAM_INT);
+		$sth->bindValue(':skill_point'       , $csv_data[$i][4]  , PDO::PARAM_INT);
+		$sth->bindValue(':type'              , $csv_data[$i][5]  , PDO::PARAM_INT);
+		
+		$sth->execute();
+	}
+	echo 'スキルデータベースを更新しました';
+	
 	// DB切断
 	db_close($db_link);
 }

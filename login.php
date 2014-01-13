@@ -1,6 +1,7 @@
 <?php
 require_once './include/session.php';
 
+
 // ログインボタンが押されたかを判定
 // 初めてのアクセスでは認証は行わずエラーメッセージは表示しないように
 if (isset($_POST["login"])) {
@@ -60,7 +61,7 @@ if (isset($_POST["login"])) {
 			$login_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/battle_game/mypage.php");
 			header("Location: {$login_url}");
 		}else{
-			$error_message = "IDもしくはパスワードが間違っています。";
+			$error_message = "IDもしくはパスワードが間違っています。";				
 		}
 	}
 }
@@ -72,6 +73,12 @@ if (isset($_POST["login"])) {
 include './include/header.php';
 
 echo('<hr>');
+
+dump_html($_POST);
+dump_html($_POST["login"]);
+
+echo('<hr>');
+
 
 // セッション結果の表示テスト
     print('セッション変数の確認をします。<br>');

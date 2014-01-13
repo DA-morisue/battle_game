@@ -7,6 +7,4 @@ function dump_html($var) {
 	echo '</pre>';
 }
 
-
-
 ?>
