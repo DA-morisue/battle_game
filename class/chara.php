@@ -6,15 +6,17 @@
 //----------------------------------------
 
 class chara{
-	public $chara_data;
-	public $wepon_data;
-	public $head_data;
-	public $body_data;
-	public $arm_data;
-	public $waist_data;
-	public $leg_data;
-	public $skill_category_list = array();
-	public $active_skill_list = array();
+	public $chara_data;                     // キャラデータ
+	public $wepon_data;                     // 武器のデータ 
+	public $head_data;                      // 頭防具のデータ
+	public $body_data;                      // 胴防具のデータ
+	public $arm_data;                       // 腕防具のデータ
+	public $waist_data;                     // 腰防具のデータ
+	public $leg_data;                       // 脚防具のデータ
+	public $skill_category_list = array();  // 装備品によるポイントが発生しているスキルのカテゴリーリスト
+	public $active_skill_list = array();    // 装備品によって発動しているスキルのリスト
+	public $body_double_count;              // 胴系統倍化の倍率
+	public $body_double_count_before;       // 計算用のテンポラリーな胴系統倍化の倍率
 	
 	
 	//--------------------------------------------
@@ -30,21 +32,19 @@ class chara{
 		$this->chara_data = $sth->fetch();
 
 		// 装備品の情報を取得
-		$wear_type = array( head , arm , waist , leg , body ); // 胴系統倍加のため、bodyは最後に回す
+		$wear_type = array( head , arm , waist , leg , body ); // 胴系統倍化のため、bodyは最後に回す
 		foreach ($wear_type as $type) {
 			$sql = 'SELECT * FROM '.$type.'_data WHERE id = :wear_id ';
 			$sth = $db_link->prepare( $sql );
 			$sth->bindValue(':wear_id', $this->chara_data['equip_'.$type] , PDO::PARAM_INT);
 			$sth->execute();
 			$this->{$type.'_data'} = $sth->fetch();
+			
+			// 装備品から発動スキルを取得
+			$this->get_skill( null , $this->{$type.'_data'} ,$type );
+			$this->body_double_count_before = $this->body_double_count;
 		}
 		
-		// 装備品からスキルを取得
-		foreach ($wear_type as $type) {
-			$this->get_skill( null , $this->{$type.'_data'} );
-		}
-		
-
 		// DB切断処理
 		db_close($db_link);
 	}
@@ -59,8 +59,22 @@ class chara{
 	//--------------------------------------------
 	// 防具装備処理
 	//--------------------------------------------
+	
+	// 複数の防具をまとめて付け替える場合はこちらを使用
+	// 胴系統倍化の処理を正しく行うため
+	// $wear_type にはキーに装備品のタイプ名、値に装備品のIDを入れた連想配列を渡す
+	function equip_wear_all($wear_type) {
+		$this->body_double_count_before = $this->body_double_count;
+		foreach ($wear_type as $key => $value) {
+			if ($value !== null && $chara->{$key.'_data'}['id'] !== $value) {
+				$this->equip_wear($key, $value);
+			};
+		}
+	}
+	
+	// 一つだけ装備を変更する時はこちらでもOK
 	function equip_wear( $wear_type , $wear_id) {
-
+		
 		// DBに接続
 		$db_link = db_access();
 
@@ -109,7 +123,8 @@ class chara{
 		$sth->execute();
 
 		// スキルを取得
-		$this->get_skill($remove_wear_data , $equip_wear_data);
+		echo '[[equip_wear]]-['.$wear_type.']';
+		$this->get_skill($remove_wear_data , $equip_wear_data , $wear_type);
 		
 		// DB切断処理
 		db_close($db_link);
@@ -123,8 +138,7 @@ class chara{
 	//--------------------------------------------
 	// スキル取得処理
 	//--------------------------------------------
-	function get_skill( $remove_data , $equip_data) {
-
+	function get_skill( $remove_data , $equip_data , $equip_type ) {
 		// 装備品からスキルポイント取得
 		for ($i = 1; $i <= 5; $i++) {
 			// 外す装備のスキルパラメータを反映
@@ -133,22 +147,40 @@ class chara{
 				$skill_category = $remove_data['skill_0'.$i];
 				$skill_point= $remove_data['skill_point_0'.$i];
 				
+				if ($skill_category == '胴系統倍化') {
+					$this->body_double_count += -1;
+				}
+				
+				// 胴系統倍化の倍化処理
+				if ( $equip_type == 'body') {
+					$skill_point = $skill_point * ( $this->body_double_count_before + 1 );
+				}
+				
 				if (array_key_exists($skill_category, $this->skill_category_list)) {
 					$this->skill_category_list[$skill_category] += -($skill_point);
 					if ($this->skill_category_list[$skill_category] == 0) {
 						unset($this->skill_category_list[$skill_category]);
 					}
 				}else{
-					$this->skill_category_list +=  array( $skill_category => -($skill_point));
+					$wear_type +=  array( $skill_category => -($skill_point));
 				}
 			}
-
+			
 			// 新たな装備のスキルパラメータを反映
 			if ($equip_data['skill_0'.$i] !== "") {
 			
 				$skill_category = $equip_data['skill_0'.$i];
 				$skill_point= $equip_data['skill_point_0'.$i];
 			
+				if ($skill_category == '胴系統倍化') {
+					$this->body_double_count += 1;
+				}
+				
+				// 胴系統倍化の倍化処理
+				if ( $equip_type == 'body') {
+					$skill_point = $skill_point * ( $this->body_double_count + 1 );
+				}
+				
 				if (array_key_exists($skill_category, $this->skill_category_list)) {
 					$this->skill_category_list[$skill_category] += $skill_point;
 				}else{
@@ -156,6 +188,11 @@ class chara{
 				}
 			}
 		}
+
+		
+// 		echo '['.$equip_type.']';
+// 		dump_html($this->skill_category_list);
+// 		echo '<hr>';
 		
 		// $active_skill_list を初期化
 		// 前のスキルの情報を残さないように初期化してから入れなおす
@@ -184,7 +221,6 @@ class chara{
 
 // 			debug用出力　ここから
 // 			echo "[[ skill_list ]] =><br>";
-
 // 			foreach ($skill_list as $value) {
 // 				echo $value['name'].'['.$value['skill_point'].']<br>';
 // 			}
@@ -192,15 +228,15 @@ class chara{
 
 			// $skill_listに複数の値が入っている場合のみsort処理を行う
 			if (count($skill_list) > 1) {
-				foreach ($skill_list as $key => $value) {
-					$point[$key]  = $value['skill_point'];
+				$point = array();
+				foreach ($skill_list as $value) {
+					$point[]  = $value['skill_point'];
 				}
-				array_multisort( $point , SORT_ASC , $skill_list);
+				array_multisort( $point , SORT_ASC , SORT_NUMERIC , $skill_list);
 			}
 				
 // 			　debug用出力　ここから
 // 			echo "[[ skill_list ]] ソート後 =><br>";
-
 // 			foreach ($skill_list as $value) {
 // 				echo $value['name'].'['.$value['skill_point'].']<br>';
 // 			}
@@ -210,9 +246,10 @@ class chara{
 			
 			// プラススキルの発動チェック
 			
-// 			debug用出力　ここから
-// 			foreach ($skill_list as $skill) {
-// 				//dump_html($skill);
+			foreach ($skill_list as $skill) {
+
+				//			debug用出力　ここから
+				//dump_html($skill);
 // 				echo $skill['name'].'-';
 // 				if ($skill_point > 0 ) {
 // 					echo "条件1:クリア-";
@@ -229,12 +266,13 @@ class chara{
 // 				}else {
 // 					echo "条件3:NG<br>";
 // 				}
+// 				echo '<hr>';
+				//			debug用出力　ここまで
 				
-// 				if ($skill_point > 0 && $skill_point >= $skill['skill_point'] && $skill['skill_point'] > 0) {
-// 					$active_skill = $skill;
-// 				}
-// 			}
-// 			debug用出力　ここまで
+				if ($skill_point > 0 && $skill_point >= $skill['skill_point'] && $skill['skill_point'] > 0) {
+					$active_skill = $skill;
+				}
+			}
 			
 			array_reverse($skill_list);
 

@@ -13,12 +13,21 @@ echo "ユーザー名:".$user->user_data['user_name']."<br>";
 $chara = new chara($user->user_data['chara_01']);
 
 // ポストされた装備品を切り替え
-$wear_type = array(head , body , arm , waist , leg );
-foreach ($wear_type as $value) {
-	if ($_POST[$value] !== null ) {
-		$chara->equip_wear($value, $_POST[$value]);
+$wear_type = array(
+	"head"  => null ,
+	"arm"   => null ,
+	"waist" => null ,
+	"leg"   => null ,
+	"body"  => null
+);
+
+foreach ($wear_type as $key => $value) {
+	if ($_POST[$key] !== null && $chara->{$key.'_data'}['id'] !== $_POST[$key]) {
+		$wear_type[$key] = $_POST[$key];
 	};
 }
+
+$chara->equip_wear_all($wear_type);
 
 ?>
 <hr>

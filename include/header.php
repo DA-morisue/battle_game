@@ -16,7 +16,6 @@ echo('
 
 <!-- javascript -->
 	<script type="text/javascript" src="./js/iscroll.js"></script>
-	<script type="text/javascript">
 
 <!--
 	var myScroll;
