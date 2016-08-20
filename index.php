@@ -60,7 +60,7 @@ if (isset($_POST["login"])) {
 //	$_POST["user_name"] = mb_convert_encoding($_POST["user_name"], "utf-8", "auto");
 	$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$_POST["user_name"].'";');
 
-	db_error($result;
+	db_error($result);
 
 	$user = mysql_fetch_assoc($result);
 

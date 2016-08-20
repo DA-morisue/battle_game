@@ -83,7 +83,7 @@ if (!isset($_SESSION["user_name"])) {
 		case '/battle_game/login.php':
 		case '/battle_game/logout.php':
 		case '/battle_game/entry.php':
-			//変数に値がセットされている(ログイン)済みの場合はリザルトページにリダイレクトする。
+			//変数に値がセットされている(ログイン)済みの場合はマイページにリダイレクトする。
 			$redirect_url = ((empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . "/battle_game/mypage.php");
 			header("Location: {$redirect_url}");
 			exit;

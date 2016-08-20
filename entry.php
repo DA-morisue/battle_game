@@ -24,22 +24,22 @@ if (isset($_POST["entry"])) {
 		$error_message = "IDは32文字以内で設定してください。";
 
 	//入力されたパスワードが8文字以上～32文字以内であるか確認する
-	} elseif (mb_strlen($pass) < 8 && mb_strlen($pass) > 32) {
-		$error_message = "パスワードは8文字以上～32文字以内で設定してください。";
+	} elseif (mb_strlen($pass) < 4 || mb_strlen($pass) > 32) {
+		$error_message = "パスワードは4文字以上～32文字以内で設定してください。";
 
 	//入力された情報に問題なければ登録処理を行う
 	} else {
 		//DBからユーザー情報を取得
 		$link = db_access();
-		$result = mysql_query('SELECT * FROM user WHERE user_name = "'.$user_name.'";');
+		$result = $link->query('SELECT * FROM user WHERE user_name = "'.$user_name.'";');
 
-		db_error($result);
 
-		$user = mysql_fetch_assoc($result);
+		$user = $result->fetch(PDO::FETCH_BOTH);
+
 		// ユーザー名を確認
 		// すでに登録されているユーザー名の場合はエラーを出す
 		if ($user_name == $user["user_name"]) {
-			$error_message = "そのIDはすでに使われています。<br>違うIDに変更してください。<br>";
+			$error_message = "ID「".$user_name."」はすでに使われています。<br>違うIDに変更してください。<br>";
 		}else{
 		// 未登録のユーザー名の場合は新規登録する。
 
@@ -51,9 +51,14 @@ if (isset($_POST["entry"])) {
 			$datetime = date("Y-m-d H:i:s");
 
 			//userへデータの登録
-			$entry = mysql_query('INSERT INTO battle_game.user( user_name , password , time ) VALUES ( "'.$user_name.'","'.$pass.'","'.$datetime.'" );');
+			$entry = $link -> prepare("INSERT INTO battle_game.user (user_name, password , time) VALUES (:user_name, :password , :time)");
+			$entry->bindParam(':user_name', $user_name, PDO::PARAM_STR);
+			$entry->bindValue(':password', $pass, PDO::PARAM_INT);
+			$entry->bindValue(':time', $datetime, PDO::PARAM_INT);
+	
+			$entry->execute();
 
-			db_error($entry);
+//			db_error($entry);
 		}
 
 		//DB切断処理
@@ -69,6 +74,7 @@ echo('<hr>');
 if (isset($error_message)) {
 	print '<p id="error">'.$error_message.'</p>';
 }
+
 
 if (isset($entry)) {
 	//登録成功時はこちらを表示
@@ -93,7 +99,7 @@ if (isset($entry)) {
 	echo ('
 	■IDとパスワードを入力してください。<br>
 	半角英数のみを使用することができます。<br>
-	パスワードは8文字以上で設定してください。<br>
+	パスワードは4文字以上で設定してください。<br>
 	<br>
 	<form action="entry.php" method="POST">
 	▼ID<br><input type="text" name="new_user_name" value="初期値"><br>

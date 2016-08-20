@@ -13,9 +13,73 @@
 
 
 
-// 暗号化テスト<br>
+
+// DBアクセステスト<br>
+
 <?php
 
+//DB接続処理
+function db_access() {
+
+	//mysql接続
+	$dsn = "mysql:dbname=test;host=localhost;";
+	$user = "morisue";
+	$password = "7815659";
+	
+	try{
+		$db_link = new PDO($dsn, $user, $password);
+		$db_link->query('SET NAMES utf8');
+		print('Connection OK!<br>');
+	}catch (PDOException $e){
+		print('Connection failed:'.$e->getMessage());
+		die();
+	}
+	
+	return $db_link;
+}
+
+//DB切断処理
+function db_close($db_link) {
+	$db_link = null;
+}
+
+
+$pdo = db_access();
+
+// SELECTテスト
+$stmt = $pdo->query("SELECT * FROM test ORDER BY id");
+while($row = $stmt -> fetch(PDO::FETCH_ASSOC)) {
+ $id = $row["id"];
+ $user_name = $row["user_name"];
+ $user_type = $row["user_type"];
+ $time = $row["time"];
+echo<<<EOF
+
+$id:$user_name [$user_type] $time <br>
+
+EOF;
+}
+
+// INSERTテスト
+$stmt = $pdo -> prepare("INSERT INTO test ( user_name, user_type) VALUES ( :name, :type)");
+
+$name = "david";
+
+$stmt->bindParam(':name', $name, PDO::PARAM_STR);
+$stmt->bindValue(':type', 1, PDO::PARAM_INT);
+
+
+$stmt->execute();
+
+db_close($pdo);
+
+
+
+?>
+
+<br>
+// 暗号化テスト<br>
+<?php
 $record = array();
 
 for ( $i = 0; $i < 10; $i++ ){
@@ -47,7 +111,7 @@ $time_start = microtime(true);
 	$iterationCount = 1000;
 	for( $count=0 ; $count < $iterationCount ; $count++ )
 	{
-		$encryptedpassword = sha256($encryptedpassword);
+		$encryptedpassword =  hash("sha256",$encryptedpassword);
 	}
 	//暗号化されたパスワードに「Salt」を付加した状態で、ファイル等に保存
 //	print $salt.$encryptedpassword."<br>"."<br>";

@@ -25,4 +25,14 @@ function db_access() {
 function db_close($db_link) {
 	$db_link = null;
 }
+
+
+//DBクエリエラー
+function db_error($db_link) {
+	if($db_link == false){
+		print('Connection failed:'.$e->getMessage());
+		die();
+	}
+}
+
 ?>
